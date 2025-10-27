@@ -11,7 +11,10 @@ class PEM_Likes
 
     public static function like_post()
     {
-        check_ajax_referer('pem_like_nonce', 'nonce');
+        // check_ajax_referer('pem_like_nonce', 'nonce');
+        if (is_user_logged_in()) {
+            check_ajax_referer('pem_like_nonce', 'nonce');
+        }
         $post_id = isset($_POST['post_id']) ? intval($_POST['post_id']) : 0;
 
         if (!$post_id) {
@@ -49,7 +52,10 @@ class PEM_Likes
 
     public static function dislike_post()
     {
-        check_ajax_referer('pem_like_nonce', 'nonce');
+        // check_ajax_referer('pem_like_nonce', 'nonce');
+        if (is_user_logged_in()) {
+            check_ajax_referer('pem_like_nonce', 'nonce');
+        }
         $post_id = isset($_POST['post_id']) ? intval($_POST['post_id']) : 0;
 
         if (!$post_id) {
@@ -84,6 +90,109 @@ class PEM_Likes
             'message'  => 'Post disliked successfully'
         ]);
     }
+    // public static function like_post()
+    // {
+    //     if (is_user_logged_in()) {
+    //         check_ajax_referer('pem_like_nonce', 'nonce');
+    //     }
+
+    //     $post_id = isset($_POST['post_id']) ? intval($_POST['post_id']) : 0;
+    //     if (!$post_id) wp_send_json_error('Invalid post ID');
+
+    //     $cookie_like = 'pem_like_' . $post_id;
+    //     $cookie_dislike = 'pem_dislike_' . $post_id;
+
+    //     if (isset($_COOKIE[$cookie_like])) {
+    //         wp_send_json_error('Already liked');
+    //     }
+
+    //     global $wpdb;
+    //     $table = $wpdb->prefix . 'post_engage_stats';
+
+    //     // Create summary row if not exists
+    //     $row = $wpdb->get_row($wpdb->prepare("SELECT * FROM $table WHERE post_id = %d AND user_id IS NULL", $post_id));
+    //     if ($row) {
+    //         $wpdb->query($wpdb->prepare("UPDATE $table SET likes = likes + 1 WHERE post_id = %d AND user_id IS NULL", $post_id));
+    //     } else {
+    //         $wpdb->insert($table, [
+    //             'post_id' => $post_id,
+    //             'user_id' => NULL,
+    //             'views' => 0,
+    //             'likes' => 1,
+    //             'dislikes' => 0
+    //         ]);
+    //     }
+
+    //     // Remove previous dislike
+    //     if (isset($_COOKIE[$cookie_dislike])) {
+    //         $wpdb->query($wpdb->prepare("UPDATE $table SET dislikes = GREATEST(dislikes - 1, 0) WHERE post_id = %d AND user_id IS NULL", $post_id));
+    //         setcookie($cookie_dislike, '', time() - 3600, COOKIEPATH, COOKIE_DOMAIN);
+    //     }
+
+    //     // Set like cookie
+    //     setcookie($cookie_like, '1', time() + 86400, COOKIEPATH, COOKIE_DOMAIN);
+
+    //     $likes = $wpdb->get_var($wpdb->prepare("SELECT likes FROM $table WHERE post_id = %d AND user_id IS NULL", $post_id));
+    //     $dislikes = $wpdb->get_var($wpdb->prepare("SELECT dislikes FROM $table WHERE post_id = %d AND user_id IS NULL", $post_id));
+
+    //     wp_send_json_success([
+    //         'likes' => (int)$likes,
+    //         'dislikes' => (int)$dislikes,
+    //         'voted' => 'like'
+    //     ]);
+    // }
+
+    // public static function dislike_post()
+    // {
+    //     if (is_user_logged_in()) {
+    //         check_ajax_referer('pem_like_nonce', 'nonce');
+    //     }
+
+    //     $post_id = isset($_POST['post_id']) ? intval($_POST['post_id']) : 0;
+    //     if (!$post_id) wp_send_json_error('Invalid post ID');
+
+    //     $cookie_like = 'pem_like_' . $post_id;
+    //     $cookie_dislike = 'pem_dislike_' . $post_id;
+
+    //     if (isset($_COOKIE[$cookie_dislike])) {
+    //         wp_send_json_error('Already disliked');
+    //     }
+
+    //     global $wpdb;
+    //     $table = $wpdb->prefix . 'post_engage_stats';
+
+    //     // Create summary row if not exists
+    //     $row = $wpdb->get_row($wpdb->prepare("SELECT * FROM $table WHERE post_id = %d AND user_id IS NULL", $post_id));
+    //     if ($row) {
+    //         $wpdb->query($wpdb->prepare("UPDATE $table SET dislikes = dislikes + 1 WHERE post_id = %d AND user_id IS NULL", $post_id));
+    //     } else {
+    //         $wpdb->insert($table, [
+    //             'post_id' => $post_id,
+    //             'user_id' => NULL,
+    //             'views' => 0,
+    //             'likes' => 0,
+    //             'dislikes' => 1
+    //         ]);
+    //     }
+
+    //     // Remove previous like
+    //     if (isset($_COOKIE[$cookie_like])) {
+    //         $wpdb->query($wpdb->prepare("UPDATE $table SET likes = GREATEST(likes - 1, 0) WHERE post_id = %d AND user_id IS NULL", $post_id));
+    //         setcookie($cookie_like, '', time() - 3600, COOKIEPATH, COOKIE_DOMAIN);
+    //     }
+
+    //     // Set dislike cookie
+    //     setcookie($cookie_dislike, '1', time() + 86400, COOKIEPATH, COOKIE_DOMAIN);
+
+    //     $likes = $wpdb->get_var($wpdb->prepare("SELECT likes FROM $table WHERE post_id = %d AND user_id IS NULL", $post_id));
+    //     $dislikes = $wpdb->get_var($wpdb->prepare("SELECT dislikes FROM $table WHERE post_id = %d AND user_id IS NULL", $post_id));
+
+    //     wp_send_json_success([
+    //         'likes' => (int)$likes,
+    //         'dislikes' => (int)$dislikes,
+    //         'voted' => 'dislike'
+    //     ]);
+    // }
 
     private static function increase_count($post_id, $type)
     {
@@ -139,10 +248,21 @@ class PEM_Likes
         return $result !== null ? (int) $result : 0;
     }
 
+    // private static function already_voted($post_id, $type)
+    // {
+    //     $cookie = 'pem_' . $type . '_' . $post_id;
+    //     return isset($_COOKIE[$cookie]);
+    // }
     private static function already_voted($post_id, $type)
     {
-        $cookie = 'pem_' . $type . '_' . $post_id;
-        return isset($_COOKIE[$cookie]);
+        if (is_user_logged_in()) {
+            // For logged-in users, check if user already voted
+            $cookie = 'pem_' . $type . '_' . $post_id;
+            return isset($_COOKIE[$cookie]);
+        } else {
+            // For anonymous, ignore cookie, let the DB handle counts
+            return false;
+        }
     }
 
     private static function set_voted($post_id, $type)

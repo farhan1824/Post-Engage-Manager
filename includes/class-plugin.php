@@ -147,7 +147,7 @@ class PEM_Plugin
 
     public function enqueue_public_assets()
     {
-        wp_enqueue_style('pem-public', PEM_PLUGIN_URL . 'public/css/public.css', array(), PEM_VERSION);
+        wp_enqueue_style('pem-public', PEM_PLUGIN_URL . 'public/css/public.css', [], PEM_VERSION);
         wp_enqueue_script('pem-public', PEM_PLUGIN_URL . 'public/js/public.js', ['jquery'], PEM_VERSION, true);
         wp_localize_script('pem-public', 'pemAjax', [
             'ajaxurl' => admin_url('admin-ajax.php'),
