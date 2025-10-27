@@ -1,0 +1,80 @@
+/* Dashboard widget styles */
+.pem-widget-content {
+    margin: -12px;
+    padding: 12px;
+}
+
+.pem-widget-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.pem-widget-stat {
+    text-align: center;
+    padding: 10px;
+    background: #f0f0f1;
+    border-radius: 4px;
+}
+
+.pem-widget-label {
+    display: block;
+    font-size: 12px;
+    color: #646970;
+    margin-bottom: 5px;
+}
+
+.pem-widget-value {
+    display: block;
+    font-size: 18px;
+    font-weight: 600;
+    color: #2271b1;
+}
+
+.pem-widget-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 15px 0;
+}
+
+.pem-widget-table th {
+    text-align: left;
+    padding: 8px;
+    border-bottom: 1px solid #c3c4c7;
+    font-weight: 600;
+}
+
+.pem-widget-table td {
+    padding: 8px;
+    border-bottom: 1px solid #f0f0f1;
+}
+
+.pem-widget-footer {
+    margin-top: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.pem-refresh-widget {
+    padding: 0 8px !important;
+}
+
+.pem-refresh-widget .dashicons {
+    margin: 4px 0;
+}
+
+.pem-refresh-widget.is-busy .dashicons {
+    animation: pem-spin 1s infinite linear;
+}
+
+@keyframes pem-spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
